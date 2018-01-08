@@ -1,3 +1,5 @@
+CRYPTIC
+
 # organization
 Cryptic collects up-to-date data from website APIs and provides analytic tools to assess "alt-coin" cryptocurrencies for investment purposes.  Provisional workflow:
 
