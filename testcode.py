@@ -49,7 +49,7 @@ endpoint = 'histoday?fsym=BTC&tsym=USD&limit=30&aggregate=1'
 
 
 #%% convert to request to database:
-req 	= requests.get(base_url+endpoint)
+
 def req_to_db(req):
 
 	if req.status_code != 200:
@@ -73,8 +73,6 @@ df.head()
 
 #%% plotting examples:
 
-
-
 #histogram of 24h, 7d %change
 #base_url='https://api.coinmarketcap.com/v1/ticker/'
 #'?limit=0'
@@ -83,6 +81,18 @@ df['percent_change_7d'].dropna().hist()
 
 
 
+
+
+
+
+
+
+
+
+# %% useful functions:
+
+#check for nans in entries
+pd.isnull(df)
 
 
 

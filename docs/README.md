@@ -1,5 +1,3 @@
-CRYPTIC
-
 # organization
 Cryptic collects up-to-date data from website APIs and provides analytic tools to assess "alt-coin" cryptocurrencies for investment purposes.  Provisional workflow:
 
@@ -10,11 +8,6 @@ Cryptic collects up-to-date data from website APIs and provides analytic tools t
 - ready-to-run scripts in `./analysis`
 - rough code in `testcode.py`
 
-# data
-Interested in quantitative and sentiment data to discover and assess trends.  Partial api source list:
+# links
 
-- https://coinmarketcap.com/api/
-- https://www.cryptocompare.com/api/
-- https://www.cryptocompare.com/api/?javascript#-api-data-pricehistorical-
-- http://alt19.com/
-- http://alt19.com/marketindexes.html 
+[./notes]()
