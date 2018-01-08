@@ -1,13 +1,13 @@
 website/notes: [...]()
 
-# cryptic basic framework
-This repo is a suite of tools for up-to-date analysis of alt-coins.  Provisional workflow:
+# code organization
+Cryptic collects up-to-date data from website APIs and provides analytic tools to assess "alt-coin" cryptocurrencies for investment purposes.  Provisional workflow:
 
-- website APIs from various sources will collect data live, and saved in a pandas DataFrame (stored in `data`)
-- DFs (will be) merged to a master DataFrame for convenience (also in `data`)
-- Analysis/query definitions and classes developed to query the DF stored in `./lib`
-- ready-to-run scripts and notes kept in `./analysis`
-- notes, write-ups, and conclusions can be contributed in `./docs`
+- notes, analysis, and conclusions (markdown) kept at `./docs`.  Viewable at: https://tcrensink.github.io/cryptic/
+- each API endpoint is stored in a unique pandas DataFrame and regularly updated (in `./data`)
+- DataFrames merged to a master DataFrame for convenient analysis (`./data`)
+- shared class/functions stored in `./lib`
+- ready-to-run scripts in `./analysis`
 - rough code in `testcode.py`
 
 # data
