@@ -1,5 +1,3 @@
-website/notes: [...]()
-
 # cryptic basic framework
 This repo is a suite of tools for up-to-date analysis of alt-coins.  Provisional workflow:
 
