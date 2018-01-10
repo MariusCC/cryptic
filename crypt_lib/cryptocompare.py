@@ -15,7 +15,6 @@ To add? reference: https://www.cryptocompare.com/api
 - https://min-api.cryptocompare.com/data/top/pairs?fsym=ETH
 """
 
-
 def coin_list():
 	"""
 	list of coins listed on cryptocompare with additional data.

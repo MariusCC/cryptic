@@ -3,7 +3,29 @@ import json
 import pandas as pd
 import datetime
 import urllib
+import datetime
 # import io
+
+def refresh():
+	"""
+	automates api calls
+	# scheduled api calls to retrieve new data
+	# https://pypi.python.org/pypi/schedule
+	# https://stackoverflow.com/questions/373335/how-do-i-get-a-cron-like-scheduler-in-python
+	"""
+	pass
+
+def inspect_response(url):
+	"""
+	prompted inspection of url request data for exploration
+	"""
+	pass
+
+def append_dataframe_rows(df, df_to_append):
+	"""
+	for appending new data to existing dataframe
+	"""
+	pass
 
 def url_to_fname(url):
 	"""
@@ -11,14 +33,18 @@ def url_to_fname(url):
 	"""
 	url_parts = urllib.parse.urlparse(url)
 	#fname = ''.join([c if c.isalnum() else '_' for c in url])
-	fn1 = url_parts.netloc.replace('www.', '').replace('.com','')
+	fn1 = url_parts.netloc.replace('www.', '').replace('.com', '')
 	fn2 = url_parts.path.replace('/', '_')
 	fn3 = url_parts.query.replace('/', '_')
 
-	date_str = datetime.datetime.now().strftime('%Y%m%d')
-
-	fname = fn1 + fn2 + fn3 + date_str
+	fname = fn1 + fn2 + fn3 + get_date_str()
 	return fname
+
+def get_date_str():
+	"""
+	returns yyyymmdd datestring
+	"""
+	return datetime.datetime.now().strftime('%Y%m%d')
 
 
 def url_to_dataframe(url, json_key='Data'):
@@ -36,8 +62,8 @@ def url_to_dataframe(url, json_key='Data'):
 		return None
 	try:
 		#df = pd.read_json(res.content)
-		data 	= res.json()[json_key]
-		df 		= pd.DataFrame.from_dict(data)
+		data	= res.json()[json_key]
+		df		= pd.DataFrame.from_dict(data)
 	except KeyError:
 		print('there was an error loading req.json()[\'Data\'] to df.') 
 		print('list of available keys:')
@@ -45,7 +71,7 @@ def url_to_dataframe(url, json_key='Data'):
 		# data = json.loads(res.content)
 		# df = pd.DataFrame.from_dict(data['Data'])
 	
-	df.url = url	
+	df.url = url
 	return df
 
 
@@ -64,7 +90,6 @@ def url_to_dict(url):
 	return res.json()
 
 
-
 def save_dataframe(df, silent=False):
 	"""
 	save dataframe to ./data named url_to_fname(url).csv
@@ -77,51 +102,36 @@ def save_dataframe(df, silent=False):
 	- check if file exists before writing
 	- add path parameter
 	"""
-	fname 	= url_to_fname(df.url) + '.csv'
 	path 	= '../data/'
+	fname 	= url_to_fname(df.url) + '.csv'
 	
-	df.to_csv(path + fname)	
-	if silent == False:
+	df.to_csv(path + fname)
+	if silent is False:
 		print('\nsaved to: ' + path + fname)
 
 
-def load_dataframe(url, date_str=None, silent=False):
+def load_dataframe(url, date_str=get_date_str(), silent=False):
 	"""
-	looks in data folder for saved dataframe matching url and date.  Will look for df created today if date_str is not given.
+	looks in data folder for saved dataframe matching url and date.  Will look for current df if date_str is not given.
 	date_str format: 'yyyymmdd'	
 	to do:
+	- load by filename (w/wo date)
+	- date_str=None -> fname has no date in it
 	- add example
 	- exception handling
 	"""
-	if date_str is not None:
+	path = '../data/'
+	
+	if date_str is not 'today':
 		#parse fname
 		base_name = url_to_fname(url)[:-8]
 		fname 	= base_name + date_str + '.csv'
-
 	else: 
 		fname 	= url_to_fname(url) + '.csv'
 
-	path = '../data/'
-	
-	pd.read_csv(path + fname)
-
-	if silent == False:
+	df = pd.read_csv(path + fname)
+	if silent is False:
 		print('df read from ' + path + fname)
 	return df
 
-def call_apis():
-	"""
-	automates api calls	
-	# scheduled api calls to retrieve new data
-	# https://pypi.python.org/pypi/schedule
-	# https://stackoverflow.com/questions/373335/how-do-i-get-a-cron-like-scheduler-in-python
-	"""
-	pass
-
-
-def inspect_response(url):
-	"""
-	guided inspection of url request data
-	"""
-	pass
 
