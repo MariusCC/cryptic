@@ -1,5 +1,5 @@
 # Description
-Cryptic collects live from website APIs and provides analytic tools to assess "alt-coin" cryptocurrencies for investment purposes.
+Cryptic collects live from website APIs and provides analytic tools to assess cryptocurrencies for investment purposes.
 
 # Organization
 - https://tcrensink.github.io/cryptic/, `./docs`: wiki-like notes, analysis, and reference

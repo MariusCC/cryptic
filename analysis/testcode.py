@@ -23,6 +23,9 @@ http://www.livecryptotweets.com/#.WlZkmBovbrE.link
 """
 
 
+#EXAMPLE 2: histogram of percent change vs time:
+df['percent_change_24h'].dropna().hist()
+df['percent_change_7d'].dropna().hist()
 
 
 
@@ -33,10 +36,11 @@ http://www.livecryptotweets.com/#.WlZkmBovbrE.link
 
 
 
-# %% useful functions:
+#useful functions:
 
 #check for nans in entries
 pd.isnull(df)
+df.dropna() 	#dropx rows with nans
 
 
 
