@@ -1,7 +1,7 @@
 # Links
 - [back](../README)
 - [Completed](./completed)
-- [API sources](./APIsourcess)
+- [API sources](./APIsources)
 
 # To do now 
 - write `ROSE` examples:

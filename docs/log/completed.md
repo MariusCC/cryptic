@@ -1,7 +1,7 @@
 # Links
 - [back](../README)
 - [To do](./todo)
-- [API sources](./APIsourcess)
+- [API sources](./APIsources)
 
 # History of completed tasks
 - `binance.py` api->df (exchange data, coinlist)
