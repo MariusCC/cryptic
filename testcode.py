@@ -1,5 +1,7 @@
 """
-test/sandbox code.
+tmp code here
+no expectation that code works.  Nothing depends on this.
+
 - harvest crypto data (start with coinmarket cap)
 - get (new) alt coins from API to plot, automated
 - write analysis suite
