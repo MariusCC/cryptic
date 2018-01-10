@@ -1,5 +1,5 @@
 # Cryptic wiki
 Github link: https://github.com/tcrensink/cryptic
 
-- [notes](./notes)
-- [log](./log)
+- [To do](./log/todo)
+- [Completed](./log/completed)
