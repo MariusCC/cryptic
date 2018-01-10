@@ -12,50 +12,16 @@ from pprint import pprint
 import io
 import matplotlib.pyplot as plt
 
+"""
+See slack channel: #tools
 
-#INPUT: select a base_url and endpoint below it:
+SENTIMENT DATA:
+"/1.1/search/tweets.json?q=from%3ANasa%20OR%20%23nasa"
+http://www.livecryptotweets.com
+http://www.livecryptotweets.com/#.WlZkmBovbrE.link
+ google trends?
+"""
 
-#Coinmarketcap
-# all currently available coinmarketcap api data
-base_url = 'https://api.coinmarketcap.com/v1/ticker/'
-endpoint = '?limit=0'
-
-
-#%% BINANCE
-# base_url = 'https://api.binance.com/api/v1/'
-# endpoint = 'exchangeInfo'
-
-
-#%% convert to request to database:
-
-def req_to_db(req):
-
-	if req.status_code != 200:
-		print('Error in request')
-		return None
-	
-	try:
-		df = pd.read_json(req.content)
-	except ValueError:
-		data = json.loads(req.content)
-		df = pd.DataFrame.from_dict(data['Data'])
-
-	return df
-
-
-# db summary
-df 	= req_to_db(req)
-df.columns
-df.head()
-
-
-#%% plotting examples:
-
-#histogram of 24h, 7d %change
-#base_url='https://api.coinmarketcap.com/v1/ticker/'
-#'?limit=0'
-df['percent_change_24h'].dropna().hist()
-df['percent_change_7d'].dropna().hist()
 
 
 

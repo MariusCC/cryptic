@@ -21,11 +21,12 @@ def inspect_response(url):
 	"""
 	pass
 
-def append_dataframe_rows(df, df_to_append):
+def append_dataframe_rows(df, df_new):
 	"""
-	for appending new data to existing dataframe
+	append df_new rows to df to dataframe
 	"""
 	pass
+
 
 def url_to_fname(url):
 	"""
@@ -50,11 +51,11 @@ def get_date_str():
 def url_to_dataframe(url, json_key='Data'):
 	"""
 	extract url data into pandas df.  RPC requests may return data in slightly different forms; this function tries to "smartly" convert request data to dataframe.  The original url request is saved as attribute `url`.
-	
 	example:
 	url = 'https://www.cryptocompare.com/api/data/coinlist/'
 	df = url_to_dataframe(url)
 	df.url
+	
 	"""
 	res = requests.get(url)
 	if res.status_code != 200:

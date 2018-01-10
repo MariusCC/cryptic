@@ -1,18 +1,19 @@
-# organization
-Cryptic collects up-to-date data from website APIs and provides analytic tools to assess "alt-coin" cryptocurrencies for investment purposes.  Provisional workflow:
+# Description
+Cryptic collects live from website APIs and provides analytic tools to assess "alt-coin" cryptocurrencies for investment purposes.
 
-- notes, analysis, and conclusions (markdown) kept at `./docs`.  Viewable at: https://tcrensink.github.io/cryptic/
-- each API endpoint is stored in a unique pandas DataFrame and regularly updated (in `./data`)
-- DataFrames merged to a master DataFrame for convenient analysis (`./data`)
-- shared class/functions stored in `./lib`
-- ready-to-run scripts in `./analysis`
-- rough code in `testcode.py`
+# Organization:
+- https://tcrensink.github.io/cryptic/, `./docs`: wiki-like notes, analysis, and reference
+- `crypt_lib`: definitions for API data extraction and analysis tools.
+- `analysis`: ready-to-run examples and analysis scripts
+- `data`: read-only storage of (dated) dataframe data.
+- `output`: saved output figures and scripts to recreate them.  `data` is only dependency.
 
-# data
-Interested in quantitative and sentiment data to discover and assess trends.  Partial api source list:
+# Workflow (in progress):
+- pandas dataframes created from API calls
+- dataframes dated and saved to `./data`
+- (optional) dataframes merged to a master DataFrame for more convenient analysis
 
-- https://coinmarketcap.com/api/
+# Data sources
+(partial) API source list:
 - https://www.cryptocompare.com/api/
-- https://www.cryptocompare.com/api/?javascript#-api-data-pricehistorical-
-- http://alt19.com/
-- http://alt19.com/marketindexes.html 
+- https://api.binance.com/api/
