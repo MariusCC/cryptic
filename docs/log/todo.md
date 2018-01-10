@@ -1,6 +1,7 @@
 # Links
 - [back](../README)
 - [Completed](./completed)
+- [API sources](./APIsourcess)
 
 # To do now 
 - write `ROSE` examples:
@@ -15,14 +16,5 @@
 - debug `util_functions.py`
 - combine dfs into master df (organized by...?)
 - find more APIs
-
-# DATA
-api sources:
-
-- https://coinmarketcap.com/api/
-- https://www.cryptocompare.com/api/
-- https://www.cryptocompare.com/api/?javascript#-api-data-pricehistorical-
-- http://alt19.com/
-- http://alt19.com/marketindexes.html 
 
 [back](./README.md)

@@ -152,7 +152,6 @@ def mining_info():
 	coin_data 	= url_to_dict(url)['CoinData']	
 	df1 		= pd.DataFrame(mining_data).T
 	df2 		= pd.DataFrame(coin_data)
-	
 	return [df1, df2]
 
 
