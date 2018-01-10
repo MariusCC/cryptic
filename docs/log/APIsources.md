@@ -21,5 +21,3 @@
 - https://www.cryptocompare.com/api/?javascript#-api-data-pricehistorical-
 - http://alt19.com/
 - http://alt19.com/marketindexes.html 
-
-[back](./README.md)

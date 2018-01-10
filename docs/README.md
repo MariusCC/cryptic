@@ -1,5 +1,5 @@
 # Cryptic wiki
-Github link: https://github.com/tcrensink/cryptic
+For organizing [https://github.com/tcrensink/cryptic](https://github.com/tcrensink/cryptic) and crypto analysis.
 
 - [To do](./log/todo)
 - [Completed](./log/completed)

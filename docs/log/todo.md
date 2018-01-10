@@ -1,5 +1,5 @@
 # Links
-- [back](../README)
+- [Readme](../)
 - [Completed](./completed)
 - [API sources](./APIsources)
 
@@ -16,5 +16,3 @@
 - debug `util_functions.py`
 - combine dfs into master df (organized by...?)
 - find more APIs
-
-[back](./README.md)
