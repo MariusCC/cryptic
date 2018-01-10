@@ -1,5 +1,4 @@
-# Links
-- [Readme](../)
+- [Home](../)
 - [Completed](./completed)
 - [API sources](./APIsources)
 

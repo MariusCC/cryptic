@@ -30,5 +30,3 @@ def binance_df():
 
 	df.index = df.symbol
 	return df
-
-

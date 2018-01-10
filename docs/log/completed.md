@@ -1,5 +1,4 @@
-# Links
-- [Readme](../)
+- [Home](../)
 - [To do](./todo)
 - [API sources](./APIsources)
 

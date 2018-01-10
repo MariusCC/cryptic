@@ -1,5 +1,4 @@
-# Links
-- [Readme](../)
+- [Home](../)
 - [To do](./todo)
 - [Completed](./completed)
 
@@ -20,4 +19,4 @@
 - https://coinmarketcap.com/api/
 - https://www.cryptocompare.com/api/?javascript#-api-data-pricehistorical-
 - http://alt19.com/
-- http://alt19.com/marketindexes.html 
+- http://alt19.com/marketindexes.html
