@@ -13,7 +13,10 @@ Cryptic collects live from website APIs and provides analytic tools to assess "a
 - dataframes dated and saved to `./data`
 - (optional) dataframes merged to a master DataFrame for more convenient analysis
 
-# Data sources
+# Data
+Included quantitative and sentiment data, collected from several exchanges and social media platforms (reddit, facebook, twitter).  
+
 (partial) API source list:
 - https://www.cryptocompare.com/api/
 - https://api.binance.com/api/
+- https://api.kucoin.com
