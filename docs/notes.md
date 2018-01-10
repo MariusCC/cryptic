@@ -1,8 +1,9 @@
 [back](./README.md)
 
-# CURRENT ACTIVITY
+# DO NOW
 
-- get basic api to dfs in ./data
+- get basic api to dfs in ./data.  Verify df isn't mangled
+- write 'read_csv' wrapper (needed?)
 - start summary data script
 - automate saving/timestamping
 
@@ -19,7 +20,7 @@
 - increase sentiment/discovery channels of data
 
 # DATA
-current api source list:
+api sources:
 
 - https://coinmarketcap.com/api/
 - https://www.cryptocompare.com/api/

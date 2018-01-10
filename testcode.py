@@ -8,7 +8,6 @@ test/sandbox code.
 	- price as a function of time from first appearance
 	- price
 
-
 """
 import requests
 import pandas as pd
