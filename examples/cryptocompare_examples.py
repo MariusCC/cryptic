@@ -1,7 +1,8 @@
-from CRYPTIC import crypt_lib
-from ..crypt_lib.util_functions import *
-from cryptocompare import *
-from pprint import pprint
+from cryptic.cryptocompare import *
+#from CRYPTIC import crypt_lib
+#from ..crypt_lib.util_functions import *
+#from cryptocompare import *
+#from pprint import pprint
 
 """
 Examples using cryptocompare data
