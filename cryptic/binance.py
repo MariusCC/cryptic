@@ -1,4 +1,5 @@
 from cryptic.util_functions import *
+from cryptic.default_parameters import *
 """
 create dbs from api:
 https://github.com/binance-exchange/binance-official-api-docs/blob/master/rest-api.md

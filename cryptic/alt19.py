@@ -1,5 +1,5 @@
-import sys
 from cryptic.util_functions import *
+from cryptic.default_parameters import *
 
 base_url = 'https://min-api.cryptocompare.com/data/'
 endpoints = ['pricehistorical?fsym=ETH&tsyms=BTC,USD&ts=1452195664&extraParams=your_app_name','histoday?fsym=BTC&tsym=USD&limit=30&aggregate=1']

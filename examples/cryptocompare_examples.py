@@ -1,4 +1,5 @@
 from cryptic.cryptocompare import *
+
 #from CRYPTIC import crypt_lib
 #from ..crypt_lib.util_functions import *
 #from cryptocompare import *
