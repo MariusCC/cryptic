@@ -1,18 +1,22 @@
-from cryptic.cryptocompare import *
-
-#from CRYPTIC import crypt_lib
-#from ..crypt_lib.util_functions import *
-#from cryptocompare import *
-#from pprint import pprint
-
+import cryptic.cryptocompare as cc
+from cryptic.default_parameters import *
 """
 Examples using cryptocompare data
 """
 
+# Get basic data from all functions:
+coin_data = cc.coin_data()
+
+
+coin_syms = list(coin_data.Symbol.sample(n=20))
+
+
+# Get price matrix of 20 random coins
+
+
+
 #Price matrix
-print('price matrix of 5 (random) coins:')
-coin_symbols = coin_list().sample(n=5).index.tolist()
-price_matrix = live_price_matrix(coin_symbols=coin_symbols)
+price_matrix = cc.live_price_matrix(coin_syms=coin_syms)
 print(price_matrix)
 
 

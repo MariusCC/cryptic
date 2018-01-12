@@ -13,19 +13,29 @@ import io
 import matplotlib.pyplot as plt
 
 """
-See slack channel: #tools
+things to write now:
+- price history for one coin
+- price history (from open) of many coins
+- price history of sentiment data
 
-SENTIMENT DATA:
-"/1.1/search/tweets.json?q=from%3ANasa%20OR%20%23nasa"
-http://www.livecryptotweets.com
-http://www.livecryptotweets.com/#.WlZkmBovbrE.link
- google trends?
+things to write later:
+- arbitrage between exchanges
+- 2D plot of price difference, t1,t2
+	- statistics on how frequently differences arise?
+
 """
 
 
+
+
+Examples:
+import 
+coin_data = 
+syms = list(coin_data.Symbol.sample(n=20))
+
 #EXAMPLE 2: histogram of percent change vs time:
-df['percent_change_24h'].dropna().hist()
-df['percent_change_7d'].dropna().hist()
+#df['percent_change_24h'].dropna().hist()
+#df['percent_change_7d'].dropna().hist()
 
 
 

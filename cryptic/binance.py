@@ -3,9 +3,21 @@ from cryptic.default_parameters import *
 """
 create dbs from api:
 https://github.com/binance-exchange/binance-official-api-docs/blob/master/rest-api.md
+
+examples: https://github.com/sammchardy/python-binance/blob/master/examples/save_historical_data.py
 """
 
-def binance_df():
+def test_connection():
+	"""
+	valid response from binance api server?
+	"""
+	res = requests.get('https://api.binance.com/api/v1/ping')
+	if res.status_code == 200:
+		print('successfully pinged binance api.')
+	else:
+		print('error connecting with binance api.')
+
+def exchange_data():
 	"""
 	returns binance api data.  Example of column data:
 	example:
@@ -32,3 +44,10 @@ def binance_df():
 
 	df.index = df.symbol
 	return df
+
+def candle_data(sym='',interval=''):
+
+	res = requests.get('https://api.binance.com/api/v1/klines?&symbol=LTCBTC')
+
+	res = requests.get('https://api.binance.com/api/v1/klines/symbol=LTCBTC').json()
+

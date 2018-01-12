@@ -6,30 +6,18 @@ import urllib
 import datetime
 # import io
 
+"""
+Description: helper functions used by website api modules.
+"""
+
+#rename module to "API_functions.py"
+
 def refresh():
 	"""
 	automates api calls
 	# scheduled api calls to retrieve new data
 	# https://pypi.python.org/pypi/schedule
 	# https://stackoverflow.com/questions/373335/how-do-i-get-a-cron-like-scheduler-in-python
-	"""
-	pass
-
-def data_check(url):
-	"""
-	before making a (rate limited) API call, check to see if the output db already exists in data.
-	"""
-	pass
-
-def inspect_response(url):
-	"""
-	prompted inspection of url request data for exploration
-	"""
-	pass
-
-def append_dataframe_rows(df, df_new):
-	"""
-	append df_new rows to df to dataframe
 	"""
 	pass
 
@@ -51,7 +39,6 @@ def get_date_str():
 	returns yyyymmdd datestring
 	"""
 	return datetime.datetime.now().strftime('%Y%m%d')
-
 
 def url_to_dataframe(url, json_key='Data'):
 	"""
@@ -80,7 +67,6 @@ def url_to_dataframe(url, json_key='Data'):
 	df.url = url
 	return df
 
-
 def url_to_dict(url):
 	"""
 	return values from rpc request.	
@@ -94,7 +80,6 @@ def url_to_dict(url):
 		return None
 	
 	return res.json()
-
 
 def save_dataframe(df, silent=False):
 	"""
@@ -114,7 +99,6 @@ def save_dataframe(df, silent=False):
 	df.to_csv(path + fname)
 	if silent is False:
 		print('\nsaved to: ' + path + fname)
-
 
 def load_dataframe(url, date_str=get_date_str(), silent=False):
 	"""
@@ -139,5 +123,4 @@ def load_dataframe(url, date_str=get_date_str(), silent=False):
 	if silent is False:
 		print('df read from ' + path + fname)
 	return df
-
 

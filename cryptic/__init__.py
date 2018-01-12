@@ -1,6 +1,6 @@
 #from cryptic import lib
 """
-cryptic collects API data from  
+modules in cryptic contain API calls, organized by source.
 """
 #from cryptic import alt19
 from cryptic import binance
