@@ -1,5 +1,5 @@
 """
-tmp code buffer for debugging, frequently overwritten.
+tmp code buffer for testing new ideas; no expectation that this code will be saveds.
 """
 import requests
 import pandas as pd
@@ -11,11 +11,10 @@ import json
 from pprint import pprint
 import io
 import matplotlib.pyplot as plt
-
 """
 things to write now:
-- price history for one coin
-- price history (from open) of many coins
+-X price history for one coin
+- price history (from exchange open) of many coins
 - price history of sentiment data
 
 things to write later:

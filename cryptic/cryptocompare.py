@@ -36,13 +36,17 @@ def price_history(coin='ETH', unit_coin='USD', unit_time='minute', exchange=''):
 def mining_info():
 	returns mining info
 	
-To add: 
+To Do:
+- convert columns to correct numeric type
+- convert live_data_dump to type df
+
 -  'https://www.cryptocompare.com/api/data/CoinSnapshot?fsym=ETH&tsyms=USD'
 - https://www.cryptocompare.com/api#-api-data-coinsnapshot-
 - https://min-api.cryptocompare.com/data/top/pairs?fsym=ETH
 """
 
 exchanges = ['Cryptsy', 'BTCChina', 'Bitstamp', 'BTER', 'OKCoin', 'Coinbase', 'Poloniex', 'Cexio', 'BTCE', 'BitTrex', 'Kraken', 'Bitfinex', 'Yacuna', 'LocalBitcoins', 'Yunbi', 'itBit', 'HitBTC', 'btcXchange', 'BTC38', 'Coinfloor', 'Huobi', 'CCCAGG', 'LakeBTC', 'ANXBTC', 'Bit2C', 'Coinsetter', 'CCEX', 'Coinse', 'MonetaGo', 'Gatecoin', 'Gemini', 'CCEDK', 'Cryptopia', 'Exmo', 'Yobit', 'Korbit', 'BitBay', 'BTCMarkets', 'Coincheck', 'QuadrigaCX', 'BitSquare', 'Vaultoro', 'MercadoBitcoin', 'Bitso', 'Unocoin', 'BTCXIndia', 'Paymium', 'TheRockTrading', 'bitFlyer', 'Quoine', 'Luno', 'EtherDelta', 'bitFlyerFX', 'TuxExchange', 'CryptoX', 'Liqui', 'MtGox', 'BitMarket', 'LiveCoin', 'Coinone', 'Tidex', 'Bleutrade', 'EthexIndia', 'Bithumb', 'CHBTC', 'ViaBTC', 'Jubi', 'Zaif', 'Novaexchange', 'WavesDEX', 'Binance', 'Lykke', 'Remitano', 'Coinroom', 'Abucoins', 'BXinth', 'Gateio', 'HuobiPro', 'OKEX']
+
 
 def coin_data():
 	"""
@@ -67,7 +71,8 @@ def coin_data():
 	df.url = url
 	return df
 
-def price_history(coin='ETH', unit_coin='USD', unit_time='minute', exchange=''):
+
+def price_history(coin='ETH', unit_coin='USD', unit_time='minute', exchange=default_exchange):
 	"""
 	returns price history by minute of value_coin in units of unit_coin.
 	parameters: 
@@ -79,16 +84,16 @@ def price_history(coin='ETH', unit_coin='USD', unit_time='minute', exchange=''):
 	- example:
 	"""
 	#url = 'https://min-api.cryptocompare.com/data/histominute?fsym={}&tsym={}&limit={}&aggregate={}&e={}'
-	url = 'https://min-api.cryptocompare.com/data/histo{}?fsym={}&tsym={}'.format(unit_time, coin.upper(), unit_coin.upper())
-	if exchange:
-		url += '&e={}'.format(exchange)
+	url = 'https://min-api.cryptocompare.com/data/histo{}?fsym={}&tsym={}&e={}'.format(unit_time, coin.upper(), unit_coin.upper(), exchange.upper())
+	#url += '&e={}'.format(exchange)
 	
 	data 	= url_to_dict(url)['Data']
 	df 		= pd.DataFrame(data)
 	df.url = url
 	return df
 
-def live_price(coin_sym='ETH', unit_syms=['USD','BTC'], exchange=''):
+
+def live_price(coin_sym='ETH', unit_syms=['USD','BTC'], exchange=default_exchange):
 	"""
 	Gets the price of a currency against multiple currencies.
 
@@ -102,12 +107,9 @@ def live_price(coin_sym='ETH', unit_syms=['USD','BTC'], exchange=''):
 	Example:
 	live_price(value)
 	"""
-	url = 'https://min-api.cryptocompare.com/data/price?fsym={}&tsyms={}'\
-			.format(coin_sym.upper(), ','.join(unit_syms).upper())
+	url = 'https://min-api.cryptocompare.com/data/price?fsym={}&tsyms={}&e={}'\
+			.format(coin_sym.upper(), ','.join(unit_syms).upper(), exchange.upper())
 
-	if exchange:
-		url += '&e={}'.format(exchange)
-	
 	data 	= url_to_dict(url)
 	df = pd.DataFrame.from_dict(data,orient='index')
 
@@ -115,7 +117,8 @@ def live_price(coin_sym='ETH', unit_syms=['USD','BTC'], exchange=''):
 	df.url 		= url
 	return df
 
-def live_price_matrix(coin_syms=default_coins, exchange='CCCAGG'):
+
+def live_price_matrix(coin_syms=default_coins, exchange=default_exchange):
 	"""
 	Returns matrix of coin exchange prices.  The exchange
 
@@ -129,11 +132,8 @@ def live_price_matrix(coin_syms=default_coins, exchange='CCCAGG'):
 	to do:
 	- skip coins that error, issue warning
 	"""
-	url = 'https://min-api.cryptocompare.com/data/pricemulti?fsyms={}&tsyms={}'\
-			.format(','.join(coin_syms).upper(), ','.join(coin_syms).upper())
-
-	if exchange:
-		url += '&e={}'.format(exchange)
+	url = 'https://min-api.cryptocompare.com/data/pricemulti?fsyms={}&tsyms={}&e={}'\
+			.format(','.join(coin_syms).upper(), ','.join(coin_syms).upper(), exchange.upper())
 	
 	data 	= url_to_dict(url)
 	df = pd.DataFrame.from_dict(data, orient='index')
@@ -144,6 +144,7 @@ def live_price_matrix(coin_syms=default_coins, exchange='CCCAGG'):
 	df.exchange = exchange
 	return df
 
+
 def live_data_dump(coin_syms=default_coins, exchange=''):
 	"""
 	returns a dict of dataframes.  Each keys is a coin symbol. 
@@ -152,10 +153,8 @@ def live_data_dump(coin_syms=default_coins, exchange=''):
 	- filter dfs/refine format
 	- sort dict/dataframe entries
 	"""
-	url = 'https://min-api.cryptocompare.com/data/pricemultifull?fsyms={}&tsyms={}'\
-			.format(','.join(coin_syms).upper(), ','.join(coin_syms).upper())
-	if exchange:
-		url += '&e={}'.format(exchange)
+	url = 'https://min-api.cryptocompare.com/data/pricemultifull?fsyms={}&tsyms={}&e={}'\
+			.format(','.join(coin_syms).upper(), ','.join(coin_syms).upper(), exchange.upper())
 	
 	data 	= url_to_dict(url)['RAW']
 	
@@ -165,6 +164,7 @@ def live_data_dump(coin_syms=default_coins, exchange=''):
 	
 	#df_dict['url'] 	= url
 	return df_dict
+
 
 def live_twitter(coin_syms=default_coins):
 	"""
@@ -181,6 +181,7 @@ def live_twitter(coin_syms=default_coins):
 	df = pd.concat(dfs, axis=1)
 	df.url = url
 	return df.T
+
 
 def live_reddit(coin_syms=default_coins):
 	"""
@@ -225,7 +226,6 @@ def mining_info():
 	df2 		= pd.DataFrame(coin_data)
 	#df.url = url
 	return [df1, df2]
-
 
 # def live_github(coin_symbols=['ETH','BTC']):
 # 	"""
