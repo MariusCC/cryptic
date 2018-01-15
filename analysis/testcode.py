@@ -18,7 +18,7 @@ things to write now:
 - price history of sentiment data
 
 things to write later:
-- arbitrage between exchanges
+- arbitrage test (circuit of coins on exchange, or between exchanges)
 - 2D plot of price difference, t1,t2
 	- statistics on how frequently differences arise?
 

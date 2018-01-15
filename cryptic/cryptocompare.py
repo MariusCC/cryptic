@@ -179,7 +179,7 @@ def live_twitter(coin_syms=default_coins):
 		dfs.append(df)
 	
 	df = pd.concat(dfs, axis=1)
-	df.url = url
+	#df.url = url
 	return df.T
 
 
