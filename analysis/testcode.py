@@ -11,6 +11,7 @@ import json
 from pprint import pprint
 import io
 import matplotlib.pyplot as plt
+
 """
 things to write now:
 -X price history for one coin
@@ -24,17 +25,15 @@ things to write later:
 
 """
 
-
-
-
 Examples:
-import 
-coin_data = 
+import
+
+coin_data =
 syms = list(coin_data.Symbol.sample(n=20))
 
-#EXAMPLE 2: histogram of percent change vs time:
-#df['percent_change_24h'].dropna().hist()
-#df['percent_change_7d'].dropna().hist()
+# EXAMPLE 2: histogram of percent change vs time:
+# df['percent_change_24h'].dropna().hist()
+# df['percent_change_7d'].dropna().hist()
 
 
 
@@ -45,22 +44,8 @@ syms = list(coin_data.Symbol.sample(n=20))
 
 
 
-#useful functions:
+# useful functions:
 
-#check for nans in entries
+# check for nans in entries
 pd.isnull(df)
-df.dropna() 	#dropx rows with nans
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+df.dropna()  # dropx rows with nans
