@@ -94,11 +94,11 @@ def coin_data():
     ProofType (str):The proof type of the cryptocurrency
     SortOrder (int):The order we rank the coin inside our internal system
     """
-    url = "{base_url}/coinlist/".format(base_url=get_base_url())
+    url = "https://www.cryptocompare.com/api/data/coinlist/"
     df = url_to_dataframe(url)
     df = df.T
-    df.iloc[:,[3,4,9,12]] = df.iloc[:,[3,4,9,12]].apply(pd.to_numeric, errors='coerce')
-    #df.iloc[:,[3,4,9,12]] = df.iloc[:,[3,4,9,12]].astype(int, errors='ignore')
+    #df.iloc[:,[3,4,9,12]] = df.iloc[:,[3,4,9,12]].apply(pd.to_numeric, errors='coerce')
+    df.iloc[:,[3,4,9,12]] = df.iloc[:,[3,4,9,12]].astype(int, errors='ignore')
     df.url = url
     return df
 
