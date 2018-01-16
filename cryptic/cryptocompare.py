@@ -73,9 +73,25 @@ exchanges = ['Cryptsy', 'BTCChina', 'Bitstamp',
              'Abucoins', 'BXinth', 'Gateio',
              'HuobiPro', 'OKEX']
 
+
+def social_url():
+    return 'https://www.cryptocompare.com/api/data/socialstats/?id={id}'
+
+
 def get_base_url():
-    base_url = 'https://min-api.cryptocompare.com/data'
-    return base_url
+    return 'https://min-api.cryptocompare.com/data'
+
+
+# tsym != tsyms.
+# def get_coin_url(coin='ETH', units=['USD', 'BTC'], exchange=default_exchange):
+#     formatted_input = '?fsym={coin}&tsyms={units}&e={exchange}'
+#     if not isinstance(coin, str):
+#         coin = ','.join(coin)
+#         formatted_input = '?fsyms={coin}&tsyms={units}&e={exchange}'
+#     return formatted_input.format(coin=coin,
+#                                   units=','.join(units),
+#                                   exchange=exchange)
+
 
 def coin_data():
     """
@@ -97,13 +113,12 @@ def coin_data():
     url = "https://www.cryptocompare.com/api/data/coinlist/"
     df = url_to_dataframe(url)
     df = df.T
-    #df.iloc[:,[3,4,9,12]] = df.iloc[:,[3,4,9,12]].apply(pd.to_numeric, errors='coerce')
     df.iloc[:,[3,4,9,12]] = df.iloc[:,[3,4,9,12]].astype(int, errors='ignore')
-    df.url = url
+    #df.url = url
     return df
 
 
-def price_history(coin='ETH', units=['USD'], exchange=default_exchange, unit_time='minute'):
+def price_history(unit_time='minute', coin='ETH', units='USD', limit=2000, aggregate=1, exchange=default_exchange):
     """
     returns price history by minute of value_coin in units of unit_coin.
     parameters: 
@@ -111,28 +126,18 @@ def price_history(coin='ETH', units=['USD'], exchange=default_exchange, unit_tim
 	units:	'ETH','BTC',...
 	unit_time:	'minute','hour','day'
 	#TODO 
-    - change datestamp to datetime row
+    - merge with existing dataframes
     - example:
     """
-    # url = 'https://min-api.cryptocompare.com/data/histominute?fsym={}&tsym={}&limit={}&aggregate={}&e={}'
-    spec_coin_url = get_coin_url(coin=coin,
-                                 units=units,
-                                 exchange=exchange)
-    url = '{base_url}/histo{time}{coin_url}'.format(base_url=get_base_url(),
-                                                    time=unit_time,
-                                                    coin_url=spec_coin_url)
-    df = url_to_dataframe(url)
-    df.url = url
+    url = 'https://min-api.cryptocompare.com/data/histo{}?fsym={}&tsym={}&limit={}&aggregate={}&e={}'.format(unit_time, coin, units, limit, aggregate, exchange)
+
+    df          = url_to_dataframe(url)
+    tstamps     = pd.to_datetime(10**9*df.time)
+    df          = df.assign(timestamps=tstamps)
+    df.index    = df.timestamps
+
     return df
 
-def get_coin_url(coin='ETH', units=['USD', 'BTC'], exchange=default_exchange):
-    formatted_input = '?fsym={coin}&tsyms={units}&e={exchange}'
-    if not isinstance(coin, str):
-        coin = ','.join(coin)
-        formatted_input = '?fsyms={coin}&tsyms={units}&e={exchange}'
-    return formatted_input.format(coin=coin,
-                                  units=','.join(units),
-                                  exchange=exchange)
 
 def live_price(coin='ETH', units=['USD', 'BTC'], exchange=default_exchange):
     """
@@ -213,8 +218,6 @@ def live_data_dump(coins=default_coins, exchange=default_exchange):
     # df_dict['url'] 	= url
     return df_dict
 
-def social_url():
-    return 'https://www.cryptocompare.com/api/data/socialstats/?id={id}'
 
 def live_social(input_coin_data=coin_data(), coins=default_coins,
                 social_media='Twitter'):

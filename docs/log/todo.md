@@ -6,6 +6,7 @@
 - clean up dataframes (dtype, multi-indxing)
 - data io (scheduler, retrieval vs new call)
 - write script to build up historical price data
+- plot sentiment data
 
 # Analysis of interest
 - plot time histories of cryptos from open 
@@ -15,6 +16,9 @@
 
 # To do later (or maybe never)
 - autogenerate docs (sphinx? doxygen?)
+- autodetect trending coins, highlight them
+- create live updating HUD
+- incorporate high frequency trading portion
 - automate data collection (airflow)
 - batch requests with requests.Session
 - fix import, path calls in `util_functions.py` functions
