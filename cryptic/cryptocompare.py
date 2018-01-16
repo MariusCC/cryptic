@@ -77,6 +77,8 @@ def coin_data():
     url = 'https://www.cryptocompare.com/api/data/coinlist/'
     df = url_to_dataframe(url)
     df = df.T
+    df.iloc[:,[3,4,9,12]] = df.iloc[:,[3,4,9,12]].apply(pd.to_numeric, errors='coerce')
+    #df.iloc[:,[3,4,9,12]] = df.iloc[:,[3,4,9,12]].astype(int, errors='ignore')
     df.url = url
     return df
 
