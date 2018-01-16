@@ -46,16 +46,36 @@ To Do:
 - https://min-api.cryptocompare.com/data/top/pairs?fsym=ETH
 """
 
-exchanges = ['Cryptsy', 'BTCChina', 'Bitstamp', 'BTER', 'OKCoin', 'Coinbase', 'Poloniex', 'Cexio', 'BTCE', 'BitTrex',
-             'Kraken', 'Bitfinex', 'Yacuna', 'LocalBitcoins', 'Yunbi', 'itBit', 'HitBTC', 'btcXchange', 'BTC38',
-             'Coinfloor', 'Huobi', 'CCCAGG', 'LakeBTC', 'ANXBTC', 'Bit2C', 'Coinsetter', 'CCEX', 'Coinse', 'MonetaGo',
-             'Gatecoin', 'Gemini', 'CCEDK', 'Cryptopia', 'Exmo', 'Yobit', 'Korbit', 'BitBay', 'BTCMarkets', 'Coincheck',
-             'QuadrigaCX', 'BitSquare', 'Vaultoro', 'MercadoBitcoin', 'Bitso', 'Unocoin', 'BTCXIndia', 'Paymium',
-             'TheRockTrading', 'bitFlyer', 'Quoine', 'Luno', 'EtherDelta', 'bitFlyerFX', 'TuxExchange', 'CryptoX',
-             'Liqui', 'MtGox', 'BitMarket', 'LiveCoin', 'Coinone', 'Tidex', 'Bleutrade', 'EthexIndia', 'Bithumb',
-             'CHBTC', 'ViaBTC', 'Jubi', 'Zaif', 'Novaexchange', 'WavesDEX', 'Binance', 'Lykke', 'Remitano', 'Coinroom',
-             'Abucoins', 'BXinth', 'Gateio', 'HuobiPro', 'OKEX']
+exchanges = ['Cryptsy', 'BTCChina', 'Bitstamp',
+             'BTER', 'OKCoin', 'Coinbase',
+             'Poloniex', 'Cexio', 'BTCE',
+             'BitTrex', 'Kraken', 'Bitfinex',
+             'Yacuna', 'LocalBitcoins', 'Yunbi',
+             'itBit', 'HitBTC', 'btcXchange',
+             'BTC38', 'Coinfloor', 'Huobi',
+             'CCCAGG', 'LakeBTC', 'ANXBTC',
+             'Bit2C', 'Coinsetter', 'CCEX',
+             'Coinse', 'MonetaGo', 'Gatecoin',
+             'Gemini', 'CCEDK', 'Cryptopia',
+             'Exmo', 'Yobit', 'Korbit',
+             'BitBay', 'BTCMarkets', 'Coincheck',
+             'QuadrigaCX', 'BitSquare', 'Vaultoro',
+             'MercadoBitcoin', 'Bitso', 'Unocoin',
+             'BTCXIndia', 'Paymium', 'TheRockTrading',
+             'bitFlyer', 'Quoine', 'Luno',
+             'EtherDelta', 'bitFlyerFX', 'TuxExchange',
+             'CryptoX', 'Liqui', 'MtGox', 'BitMarket',
+             'LiveCoin', 'Coinone', 'Tidex', 'Bleutrade',
+             'EthexIndia', 'Bithumb', 'CHBTC',
+             'ViaBTC', 'Jubi', 'Zaif',
+             'Novaexchange', 'WavesDEX', 'Binance',
+             'Lykke', 'Remitano', 'Coinroom',
+             'Abucoins', 'BXinth', 'Gateio',
+             'HuobiPro', 'OKEX']
 
+def get_base_url():
+    base_url = 'https://min-api.cryptocompare.com/data'
+    return base_url
 
 def coin_data():
     """
@@ -74,7 +94,7 @@ def coin_data():
     ProofType (str):The proof type of the cryptocurrency
     SortOrder (int):The order we rank the coin inside our internal system
     """
-    url = 'https://www.cryptocompare.com/api/data/coinlist/'
+    url = "{base_url}/coinlist/".format(base_url=get_base_url())
     df = url_to_dataframe(url)
     df = df.T
     df.iloc[:,[3,4,9,12]] = df.iloc[:,[3,4,9,12]].apply(pd.to_numeric, errors='coerce')
@@ -83,30 +103,38 @@ def coin_data():
     return df
 
 
-def price_history(coin='ETH', unit_coin='USD', unit_time='minute', exchange=default_exchange):
+def price_history(coin='ETH', units=['USD'], exchange=default_exchange, unit_time='minute'):
     """
     returns price history by minute of value_coin in units of unit_coin.
     parameters: 
     coin: 		'ETH','BTC',...
-    unit_coin:	'ETH','BTC',...
-    unit_time:	'mintue','hour','day'
-    to do:
+	units:	'ETH','BTC',...
+	unit_time:	'minute','hour','day'
+	#TODO 
     - change datestamp to datetime row
     - example:
     """
     # url = 'https://min-api.cryptocompare.com/data/histominute?fsym={}&tsym={}&limit={}&aggregate={}&e={}'
-    url = 'https://min-api.cryptocompare.com/data/histo{}?fsym={}&tsym={}&e={}'.format(unit_time, coin.upper(),
-                                                                                       unit_coin.upper(),
-                                                                                       exchange.upper())
-    # url += '&e={}'.format(exchange)
-
-    data = url_to_dict(url)['Data']
-    df = pd.DataFrame(data)
+    spec_coin_url = get_coin_url(coin=coin,
+                                 units=units,
+                                 exchange=exchange)
+    url = '{base_url}/histo{time}{coin_url}'.format(base_url=get_base_url(),
+                                                    time=unit_time,
+                                                    coin_url=spec_coin_url)
+    df = url_to_dataframe(url)
     df.url = url
     return df
 
+def get_coin_url(coin='ETH', units=['USD', 'BTC'], exchange=default_exchange):
+    formatted_input = '?fsym={coin}&tsyms={units}&e={exchange}'
+    if not isinstance(coin, str):
+        coin = ','.join(coin)
+        formatted_input = '?fsyms={coin}&tsyms={units}&e={exchange}'
+    return formatted_input.format(coin=coin,
+                                  units=','.join(units),
+                                  exchange=exchange)
 
-def live_price(coin_sym='ETH', unit_syms=['USD', 'BTC'], exchange=default_exchange):
+def live_price(coin='ETH', units=['USD', 'BTC'], exchange=default_exchange):
     """
     Gets the price of a currency against multiple currencies.
 
@@ -119,24 +147,28 @@ def live_price(coin_sym='ETH', unit_syms=['USD', 'BTC'], exchange=default_exchan
     
     Example:
     live_price(value)
+    
+    #TODO add exchange to index
     """
-    url = 'https://min-api.cryptocompare.com/data/price?fsym={}&tsyms={}&e={}' \
-        .format(coin_sym.upper(), ','.join(unit_syms).upper(), exchange.upper())
+    spec_coin_url = get_coin_url(coin=coin,
+                                 units=units,
+                                 exchange=exchange)
+    url = '{base_url}/price{coin_url}'.format(base_url=get_base_url(),
+                                              coin_url=spec_coin_url)
 
     data = url_to_dict(url)
-    df = pd.DataFrame.from_dict(data, orient='index')
-
-    df.columns = [value_symbol]
-    df.url = url
+    df = pd.DataFrame(data, index=[coin])
+    #df.columns = units
+    #df.url = url
     return df
 
 
-def live_price_matrix(coin_syms=default_coins, exchange=default_exchange):
+def live_price_matrix(coins=default_coins, exchange=default_exchange):
     """
     Returns matrix of coin exchange prices.  The exchange
 
     Parameters:
-    coin_syms (list of str):Coin symbols for matrix
+    coins (list of str):Coin symbols for matrix
     exchange (str):			Exchange that data is pulled from.
 
     Description of content:
@@ -145,8 +177,12 @@ def live_price_matrix(coin_syms=default_coins, exchange=default_exchange):
     to do:
     - skip coins that error, issue warning
     """
-    url = 'https://min-api.cryptocompare.com/data/pricemulti?fsyms={}&tsyms={}&e={}' \
-        .format(','.join(coin_syms).upper(), ','.join(coin_syms).upper(), exchange.upper())
+    base_url = get_base_url()
+    spec_coin_url = get_coin_url(coin=coins,
+                                 units=coins,
+                                 exchange=exchange)
+    url = '{base_url}/pricemulti{coin_url}'.format(base_url=base_url,
+                                                   coin_url=spec_coin_url)
 
     data = url_to_dict(url)
     df = pd.DataFrame.from_dict(data, orient='index')
@@ -158,7 +194,7 @@ def live_price_matrix(coin_syms=default_coins, exchange=default_exchange):
     return df
 
 
-def live_data_dump(coin_syms=default_coins, exchange=''):
+def live_data_dump(coins=default_coins, exchange=default_exchange):
     """
     returns a dict of dataframes.  Each keys is a coin symbol. 
     to do:
@@ -167,68 +203,39 @@ def live_data_dump(coin_syms=default_coins, exchange=''):
     - sort dict/dataframe entries
     """
     url = 'https://min-api.cryptocompare.com/data/pricemultifull?fsyms={}&tsyms={}&e={}' \
-        .format(','.join(coin_syms).upper(), ','.join(coin_syms).upper(), exchange.upper())
-
+        .format(','.join(coins).upper(), ','.join(coins).upper(), exchange.upper())
     data = url_to_dict(url)['RAW']
 
     df_dict = dict()
     for k, v in data.items():
         df_dict[k] = pd.DataFrame.from_dict(v).T
 
-        # df_dict['url'] 	= url
+    # df_dict['url'] 	= url
     return df_dict
 
+def social_url():
+    return 'https://www.cryptocompare.com/api/data/socialstats/?id={id}'
 
-def live_twitter(coin_syms=default_coins):
+def live_social(input_coin_data=coin_data(), coins=default_coins,
+                social_media='Twitter'):
     """
-    returns df of twitter data for given coin symbols
+    Returns df of data from social feed for given coin symbols
+    
+    #TODO deal with multiple sites for CodeRepository
     """
-    ids = list(coin_data().loc[coin_syms]['Id'].dropna())
+    coin_id_df = input_coin_data.loc[coins, ['Name', 'Id']].dropna()
+
     dfs = []
-    for j, id in enumerate(ids):
-        res = requests.get('https://www.cryptocompare.com/api/data/socialstats/?id=' + id)
-        df = pd.DataFrame.from_dict(res.json()['Data']['Twitter'], orient='index')
-        df.columns = [coin_syms[j]]
+    for index, coin_row in coin_id_df.iterrows():
+        res = requests.get(social_url().format(id=int(coin_row['Id'])))
+        df = pd.DataFrame.from_dict(res.json()['Data'][social_media],
+                                    orient='index')
+        df.columns = [coin_row['Name']]
         dfs.append(df)
 
     df = pd.concat(dfs, axis=1)
-    # df.url = url
+    df.url = social_url()
     return df.T
-
-
-def live_reddit(coin_syms=default_coins):
-    """
-    returns df of reddit data for given coin symbols
-    """
-    ids = list(coin_data().loc[coin_syms]['Id'].dropna())
-    dfs = []
-    for j, id in enumerate(ids):
-        res = requests.get('https://www.cryptocompare.com/api/data/socialstats/?id=' + id)
-        df = pd.DataFrame.from_dict(res.json()['Data']['Reddit'], orient='index')
-        df.columns = [coin_syms[j]]
-        dfs.append(df)
-
-    df = pd.concat(dfs, axis=1)
-    df.url = url
-    return df.T
-
-
-def live_facebook(coin_syms=default_coins):
-    """
-    returns df of facebook data for given coin symbols
-    """
-    ids = list(coin_data().loc[coin_syms]['Id'].dropna())
-    dfs = []
-    for j, id in enumerate(ids):
-        res = requests.get('https://www.cryptocompare.com/api/data/socialstats/?id=' + id)
-        df = pd.DataFrame.from_dict(res.json()['Data']['Facebook'], orient='index')
-        df.columns = [coin_syms[j]]
-        dfs.append(df)
-
-    df = pd.concat(dfs, axis=1)
-    df.url = url
-    return df.T
-
 
 def mining_info():
     url = 'https://www.cryptocompare.com/api/data/miningequipment/'
@@ -239,20 +246,3 @@ def mining_info():
     df2 = pd.DataFrame(coin_data)
     # df.url = url
     return [df1, df2]
-
-# def live_github(coin_symbols=['ETH','BTC']):
-# 	"""
-# 	returns df of github data for given coin symbols
-# 	"""
-# 	ids = list(coin_list().loc[coin_symbols]['Id'])
-# 	dfs = []
-# 	for j, id in enumerate(ids):
-# 		res = requests.get('https://www.cryptocompare.com/api/data/socialstats/?id='+id)
-# 		value = res.json()['Data']['CodeRepository']['Points']
-
-# 		df = pd.DataFrame.from_dict(value,orient='columns')			
-# 		df.columns = [coin_symbols[j]]
-# 		dfs.append(sub_df)
-
-# 	df = pd.concat(dfs, axis=1)
-# 	return df

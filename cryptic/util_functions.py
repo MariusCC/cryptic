@@ -54,18 +54,15 @@ def url_to_dataframe(url, json_key='Data'):
     df.url
     
     """
-    res = requests.get(url)
-    if res.status_code != 200:
-        print('Error in request!')
-        return None
+    url_res = url_to_dict(url)
     try:
         # df = pd.read_json(res.content)
-        data = res.json()[json_key]
+        data = url_res[json_key]
         df = pd.DataFrame.from_dict(data)
     except KeyError:
         print('there was an error loading req.json()[\'Data\'] to df.')
         print('list of available keys:')
-        print(res.json().keys())
+        print(url_res.json().keys())
     # data = json.loads(res.content)
     # df = pd.DataFrame.from_dict(data['Data'])
 
