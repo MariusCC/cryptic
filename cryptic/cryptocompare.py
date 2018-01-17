@@ -125,6 +125,7 @@ def price_history(time_interval='minute', coin='ETH', unit='USD', N=2000, aggreg
     return df
 
 def save_price_history():
+    pass
     """
     appends/merges price_history() output to csv file.  Filenames depend on coin (ETH), unit (USD), time_interval (minute), and exchange (CCCAGG).  Example: 
     ./data/ETH_in_USD_by_minute_on_CCCAGG.csv
