@@ -137,6 +137,7 @@ def write_price_history(df, coin, unit, time_interval, exchange):
     cc.save_price_history(df1, df1.args['coin'], unit=df1.args['unit'], time_interval=df1.args['time_interval'],exchange=df1.args['exchange'])
 
     TO DO:
+    - pull coin, unit, etc from df
     - compress file storage?
     - revise merge method; this should have fail-safes.  It is known that the last record of an API call is often corrupted (the only?)
     - error handle the read/write
@@ -161,6 +162,9 @@ def write_price_history(df, coin, unit, time_interval, exchange):
 def read_price_history(coin, unit, time_interval, exchange):
     """
     if csv file exists, returns df; else returns None
+
+    TO DO:
+    change params to file path
     """
     filetype = 'csv'
     path = '../data/' + '{}_in_{}_by_{}_on_{}.{}'.format(coin, unit, time_interval, exchange, filetype)
