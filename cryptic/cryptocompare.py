@@ -9,41 +9,19 @@ data from: https://www.cryptocompare.com/api.  Functions are based on API calls.
 
 SUMMARY OF MODULE CONTENTS:
 
-def coin_data():
-	Returns dataframe of cryptocurrency coin info.
-	
+def coin_data():    
 def live_price(coin_sym='ETH', unit_syms=['USD','BTC'], exchange=''):
-	Gets the price of a currency against multiple currencies.
-
 def live_price_matrix(coin_syms=default_coins, exchange=''):
-	Returns a live price matrix of coins
-	
-	
 def live_data_dump(coin_syms=default_coins, exchange=''):
-	Returns a dict of dataframes.  Each keys is a coin symbol. 
-	
 def live_twitter(coin_syms=default_coins):
-	returns df of twitter data for given coin symbols
-
 def live_reddit(coin_syms=default_coins):
-	returns df of reddit data for given coin symbols
-	
 def live_facebook(coin_syms=default_coins):
-	returns df of facebook data for given coin symbols
-	
 def price_history(coin='ETH', unit_coin='USD', unit_time='minute', exchange=''):
-	returns price history by minute of value_coin in units of unit_coin.
-	
 def mining_info():
-	returns mining info
-	
+    
 To Do:
-- convert columns to correct numeric type
-- convert live_data_dump to type df
-
--  'https://www.cryptocompare.com/api/data/CoinSnapshot?fsym=ETH&tsyms=USD'
-- https://www.cryptocompare.com/api#-api-data-coinsnapshot-
-- https://min-api.cryptocompare.com/data/top/pairs?fsym=ETH
+- clean df cols, types
+- convert live_data_dump to multi-indexed df
 """
 
 exchanges = ['Cryptsy', 'BTCChina', 'Bitstamp',
@@ -74,14 +52,6 @@ exchanges = ['Cryptsy', 'BTCChina', 'Bitstamp',
              'HuobiPro', 'OKEX']
 
 
-def social_url():
-    return 'https://www.cryptocompare.com/api/data/socialstats/?id={id}'
-
-
-def get_base_url():
-    return 'https://min-api.cryptocompare.com/data'
-
-
 # tsym != tsyms.
 # def get_coin_url(coin='ETH', units=['USD', 'BTC'], exchange=default_exchange):
 #     formatted_input = '?fsym={coin}&tsyms={units}&e={exchange}'
@@ -100,12 +70,12 @@ def coin_data():
     Parameters: (None)
 
     Description:
-    Id (int):		The internal id, this is used in other calls
-    Url	(string):	The url of the coin on cryptocompare
+    Id (int):       The internal id, this is used in other calls
+    Url (string):   The url of the coin on cryptocompare
     ImageUrl (str): The logo image of the coin
-    Name (str): 	The symbol
-    CoinName (str):	The name
-    FullName (str):	A combination of the name and the symbol
+    Name (str):     The symbol
+    CoinName (str): The name
+    FullName (str): A combination of the name and the symbol
     Algorithm (str):The algorithm of the cryptocurrency
     ProofType (str):The proof type of the cryptocurrency
     SortOrder (int):The order we rank the coin inside our internal system
@@ -113,59 +83,85 @@ def coin_data():
     url = "https://www.cryptocompare.com/api/data/coinlist/"
     df = url_to_dataframe(url)
     df = df.T
-    df.iloc[:,[3,4,9,12]] = df.iloc[:,[3,4,9,12]].astype(int, errors='ignore')
+    numeric_cols = ['FullyPremined', 'Id', 'SortOrder', 'TotalCoinSupply']
+    df = numerify(df, numeric_cols)
     #df.url = url
     return df
 
 
-def price_history(unit_time='minute', coin='ETH', units='USD', limit=2000, aggregate=1, exchange=default_exchange):
+def price_history(time_interval='minute', coin='ETH', unit='USD', N=2000, aggregate=0, exchange=default_exchange, datetime_obj=None):
     """
-    returns price history by minute of value_coin in units of unit_coin.
-    parameters: 
-    coin: 		'ETH','BTC',...
-	units:	'ETH','BTC',...
-	unit_time:	'minute','hour','day'
-	#TODO 
-    - merge with existing dataframes
-    - example:
+    https://www.cryptocompare.com/api/#-api-data-histohour-
+    returns price history at minute of value_coin in units of unit_coin:
+    parameters:
+    coin:                   'ETH','BTC',...
+    unit:                   'ETH','BTC',...
+    time_interval:          'minute','hour','day'
+    aggregate:              1,10 (aggregates (averages?) data points)
+    N (limit):              number rows of data to retrieve
+    datetime_obj (toTs):    datetime.datetime.now()
+
+    tryConversion:  (not incl) if set to 'false', will not use intermediate coins to return price hist. 
+    sign:           (not incl) will sign server requests if included
+
+    #TODO 
+    - use coin = 'USD', units=['ETH','BTC',...] to get more data with each call?
+    - add time
     """
-    url = 'https://min-api.cryptocompare.com/data/histo{}?fsym={}&tsym={}&limit={}&aggregate={}&e={}'.format(unit_time, coin, units, limit, aggregate, exchange)
+    if datetime_obj is None:
+        timestamp = datetime.datetime.now().timestamp()
+    else:
+        timestamp = datetime_obj.timestamp()
 
-    df          = url_to_dataframe(url)
-    tstamps     = pd.to_datetime(10**9*df.time)
-    df          = df.assign(timestamps=tstamps)
-    df.index    = df.timestamps
+    url = 'https://min-api.cryptocompare.com/data/histo{}?fsym={}&tsym={}&limit={}&aggregate={}&e={}&toTs={}'.format(time_interval, coin.upper(), unit.upper(), N, aggregate, exchange, int(timestamp))
 
+    df              = url_to_dataframe(url)
+    df['time']  = pd.to_datetime(df.loc[:,'time'], unit='s')
+    df.set_index('time')
+    
+    #metadata
+    df.url_args=('time_interval, coin, unit, N, aggregate, exchange, datetime_obj')    
+    df.url = url
     return df
 
-
-def live_price(coin='ETH', units=['USD', 'BTC'], exchange=default_exchange):
+def save_price_history():
     """
-    Gets the price of a currency against multiple currencies.
-
-    Parameters:
-    coin_sym (str): 			coin of interest
-    unit_syms (list of str):	unit coins
-    exchange (str):				currency exchange
-
-    return the value of coin1 in units [coin2,coin3,...coinN].
+    appends/merges price_history() output to csv file.  Filenames depend on coin (ETH), unit (USD), time_interval (minute), and exchange (CCCAGG).  Example: 
+    ./data/ETH_in_USD_by_minute_on_CCCAGG.csv
     
-    Example:
-    live_price(value)
-    
-    #TODO add exchange to index
-    """
-    spec_coin_url = get_coin_url(coin=coin,
-                                 units=units,
-                                 exchange=exchange)
-    url = '{base_url}/price{coin_url}'.format(base_url=get_base_url(),
-                                              coin_url=spec_coin_url)
 
-    data = url_to_dict(url)
-    df = pd.DataFrame(data, index=[coin])
-    #df.columns = units
-    #df.url = url
-    return df
+
+
+# corrupted.
+# def live_price(coin='ETH', units=['USD', 'BTC'], exchange=default_exchange):
+#     """
+#     Gets the price of a currency against multiple currencies.
+
+#     Parameters:
+#     coin_sym (str):             coin of interest
+#     unit_syms (list of str):    unit coins
+#     exchange (str):             currency exchange
+
+#     return the value of coin1 in units [coin2,coin3,...coinN].
+    
+#     Example:
+#     live_price(value)
+    
+#     #TODO add exchange to index
+#     """
+#     # spec_coin_url = get_coin_url(coin=coin,
+#     #                              units=units,
+#     #                              exchange=exchange)
+#     # url = '{base_url}/price{coin_url}'.format(base_url=get_base_url(),
+#                                               # coin_url=spec_coin_url)
+
+#     url = url = 'https://min-api.cryptocompare.com/data/histoday?fsym={}&tsym={}&limit={}&aggregate={}'\
+#             .format(coin.upper(), units.upper(), limit, aggregate)
+#     data = url_to_dict(url)
+#     df = pd.DataFrame(data, index=[coin])
+#     #df.columns = units
+#     #df.url = url
+#     return df
 
 
 def live_price_matrix(coins=default_coins, exchange=default_exchange):
@@ -174,7 +170,7 @@ def live_price_matrix(coins=default_coins, exchange=default_exchange):
 
     Parameters:
     coins (list of str):Coin symbols for matrix
-    exchange (str):			Exchange that data is pulled from.
+    exchange (str):         Exchange that data is pulled from.
 
     Description of content:
     Returns a price matrix based on 
@@ -215,7 +211,7 @@ def live_data_dump(coins=default_coins, exchange=default_exchange):
     for k, v in data.items():
         df_dict[k] = pd.DataFrame.from_dict(v).T
 
-    # df_dict['url'] 	= url
+    # df_dict['url']    = url
     return df_dict
 
 

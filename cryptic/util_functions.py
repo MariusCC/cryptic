@@ -4,7 +4,6 @@ import pandas as pd
 import datetime
 import urllib
 import datetime
-
 # import io
 
 """
@@ -23,7 +22,6 @@ def refresh():
     """
     pass
 
-
 def url_to_fname(url):
     """
     formats/parses url to make valid, creation-dated filename
@@ -33,9 +31,62 @@ def url_to_fname(url):
     fn1 = url_parts.netloc.replace('www.', '').replace('.com', '')
     fn2 = url_parts.path.replace('/', '_')
     fn3 = url_parts.query.replace('/', '_')
-
     fname = fn1 + fn2 + fn3 + get_date_str()
     return fname
+
+
+def social_url():
+    return 'https://www.cryptocompare.com/api/data/socialstats/?id={id}'
+
+
+def get_base_url():
+    return 'https://min-api.cryptocompare.com/data'
+
+
+def numerify(df=None, numeric_cols=None):
+
+    for k in numeric_cols:
+        df.loc[:, k] = df.loc[:, k].apply(pd.to_numeric, errors='coerce')
+    return df
+
+
+def to_datetime(series, unit='s'):
+    """
+    basic wrapper for pd.to_datetime.
+
+    Parameters:
+    series (type=pd.Series) 
+    unit (type=str), {'s','ns',...}.  Unit of timestamps
+    Returns: datetime Series 
+
+    Example: 
+    (pending)
+    df.timeseries = pd.to_datetime()
+    """
+    return pd.to_datetime(series, unit=unit)    
+
+
+def to_timeSeries(datetime, time_unit='minute'):
+    """
+    Parameters: 
+    datetime (type=pd.Series): datetime objects
+    time_unit (str): time unit of output Series
+    ['year', 'quarter', 'month', 'day', 'hour', 'minute', 'second', 'microsecond', 'nanosecond']
+    
+    Returns: Series of time_unit values 
+
+    Example: 
+    equivalent of, e.g.: datetime.dt.minute
+    """
+    return getattr(datetime.dt, time_unit)
+
+
+# def to_epoch(timestamp):
+#     """converts datetime_index to unix epoch
+#     Example:
+#     timestamps = pd.date_range('2018-01-16 09:15:05', periods=4, freq='H')
+#     """
+#     stamps.view('int64') // pd.Timedelta(1, unit='s')
 
 
 def get_date_str():

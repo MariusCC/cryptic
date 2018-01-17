@@ -1,18 +1,15 @@
 # basic snippets for fast retrieval
 import matplotlib.pyplot as plt
-import seaborn as sns;
-
-sns.set(color_codes=True)
-import numpy as np;
-
-np.random.seed(42)
+import seaborn as sns
+import numpy as np
 from datetime import datetime
 import cryptic.cryptocompare as cc
 import cryptic.binance as bn
 import cryptic.kukoin as kk
+sns.set(color_codes=True)
+np.random.seed(42)
 
-
-def timeseries(timestamps, prices, f=f, ax=ax, title='prices', timestr_format='%H:%M:%S'):
+def timeseries(timestamps, prices, f=plt.gcf(), ax=plt.gca(), title='prices', timestr_format='%H:%M:%S'):
     """
     simplifies timeseries plotting.  Probably better as a class than a function.
 
@@ -21,7 +18,7 @@ def timeseries(timestamps, prices, f=f, ax=ax, title='prices', timestr_format='%
     prices (pd.Series):		timeseries values
     time_format_str (str): 	ex: '%Y-%m-%d', '%H:%M:%S'
     """
-    time_str = pd.to_datetime(10 ** 9 * df.time).dt.strftime(timestr_format)
+    time_str = pd.to_datetime(df.time, unit='ns').dt.strftime(timestr_format)
 
     # if ax is None and f is None:
     # 	f, ax = plt.subplots()
