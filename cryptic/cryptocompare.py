@@ -1,6 +1,6 @@
 from cryptic.util_functions import *
 from cryptic.default_parameters import *
-
+import os
 # import sys
 # import urllib.parse
 
@@ -116,21 +116,64 @@ def price_history(time_interval='minute', coin='ETH', unit='USD', N=2000, aggreg
     url = 'https://min-api.cryptocompare.com/data/histo{}?fsym={}&tsym={}&limit={}&aggregate={}&e={}&toTs={}'.format(time_interval, coin.upper(), unit.upper(), N, aggregate, exchange, int(timestamp))
 
     df              = url_to_dataframe(url)
-    df['time']  = pd.to_datetime(df.loc[:,'time'], unit='s')
-    df.set_index('time')
+    df['time']      = pd.to_datetime(df.loc[:,'time'], unit='s')
+    df.set_index('time',inplace=True)
     
     #metadata
-    df.url_args=('time_interval, coin, unit, N, aggregate, exchange, datetime_obj')    
+    df.args = dict(time_interval=time_interval, coin=coin.upper(), unit=unit.upper(), N=N, aggregate=aggregate, exchange=exchange, datetime_obj=datetime_obj)
     df.url = url
     return df
 
-def save_price_history():
-    pass
+
+def write_price_history(df, coin, unit, time_interval, exchange):
     """
     appends/merges price_history() output to csv file.  Filenames depend on coin (ETH), unit (USD), time_interval (minute), and exchange (CCCAGG).  Example: 
     ./data/ETH_in_USD_by_minute_on_CCCAGG.csv
-    
 
+    merge method:
+    new records will take precedence (overwrite) previous df records if they exist.
+    
+    Example:
+    cc.save_price_history(df1, df1.args['coin'], unit=df1.args['unit'], time_interval=df1.args['time_interval'],exchange=df1.args['exchange'])
+
+    TO DO:
+    - compress file storage?
+    - revise merge method; this should have fail-safes.  It is known that the last record of an API call is often corrupted (the only?)
+    - error handle the read/write
+    """
+    filetype = 'csv'
+    path = '../data/' + '{}_in_{}_by_{}_on_{}.{}'.format(coin, unit, time_interval, exchange, filetype)
+    
+    df_orig = read_price_history(coin, unit, time_interval, exchange)
+
+    if df_orig is None:
+        open(path, 'x')
+        print('no original dataframe; writing current')
+        df_updated = df
+
+    else:
+        print('appending df to previous df')
+        df_updated = df.combine_first(df_orig)
+
+    df_updated.to_csv(path)
+
+    
+def read_price_history(coin, unit, time_interval, exchange):
+    """
+    if csv file exists, returns df; else returns None
+    """
+    filetype = 'csv'
+    path = '../data/' + '{}_in_{}_by_{}_on_{}.{}'.format(coin, unit, time_interval, exchange, filetype)
+    
+    if os.path.exists(path):
+        df_main = pd.read_csv(path)
+        df_main.time = pd.to_datetime(df_main.time)
+        df_main.set_index('time', inplace=True)
+        return df_main
+
+    else:
+        print('(no file found)')
+        return None    
 
 
 # corrupted.
