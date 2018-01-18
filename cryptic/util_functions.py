@@ -34,6 +34,31 @@ def url_to_fname(url):
     fname = fn1 + fn2 + fn3 + get_date_str()
     return fname
 
+def url_to_params(url):
+    """
+    Input:  price_hist() url
+    Output: dict of parameters names and values, including:
+    coin
+    unit
+    time_interval
+    exchange
+    N
+    aggregate
+    toTs
+    TO DO:
+    - either append datetime object, or deal with timestamps everywhere
+    """
+    param_codes = {'fsym':'coin', 'tsym':'unit', 'limit':'N', 'aggregate':'aggregate', 'toTs':'timestamp', 'e':'exchange'}
+    
+    base_url, endpoint  = url.split('?')
+    time_interval = base_url.split('histo')[1]
+    
+    param_list  = endpoint.split('&')    
+    param_list  = [s.split('=') for s in param_list]
+    params = [[param_codes[s[0]],s[1]] for s in param_list]
+    params.append(['time_interval', time_interval])
+    return dict(params)    
+
 
 def social_url():
     return 'https://www.cryptocompare.com/api/data/socialstats/?id={id}'

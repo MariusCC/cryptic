@@ -24,43 +24,16 @@ To Do:
 - convert live_data_dump to multi-indexed df
 """
 
-exchanges = ['Cryptsy', 'BTCChina', 'Bitstamp',
-             'BTER', 'OKCoin', 'Coinbase',
-             'Poloniex', 'Cexio', 'BTCE',
-             'BitTrex', 'Kraken', 'Bitfinex',
-             'Yacuna', 'LocalBitcoins', 'Yunbi',
-             'itBit', 'HitBTC', 'btcXchange',
-             'BTC38', 'Coinfloor', 'Huobi',
-             'CCCAGG', 'LakeBTC', 'ANXBTC',
-             'Bit2C', 'Coinsetter', 'CCEX',
-             'Coinse', 'MonetaGo', 'Gatecoin',
-             'Gemini', 'CCEDK', 'Cryptopia',
-             'Exmo', 'Yobit', 'Korbit',
-             'BitBay', 'BTCMarkets', 'Coincheck',
-             'QuadrigaCX', 'BitSquare', 'Vaultoro',
-             'MercadoBitcoin', 'Bitso', 'Unocoin',
-             'BTCXIndia', 'Paymium', 'TheRockTrading',
-             'bitFlyer', 'Quoine', 'Luno',
-             'EtherDelta', 'bitFlyerFX', 'TuxExchange',
-             'CryptoX', 'Liqui', 'MtGox', 'BitMarket',
-             'LiveCoin', 'Coinone', 'Tidex', 'Bleutrade',
-             'EthexIndia', 'Bithumb', 'CHBTC',
-             'ViaBTC', 'Jubi', 'Zaif',
-             'Novaexchange', 'WavesDEX', 'Binance',
-             'Lykke', 'Remitano', 'Coinroom',
-             'Abucoins', 'BXinth', 'Gateio',
-             'HuobiPro', 'OKEX']
-
 
 # tsym != tsyms.
-# def get_coin_url(coin='ETH', units=['USD', 'BTC'], exchange=default_exchange):
-#     formatted_input = '?fsym={coin}&tsyms={units}&e={exchange}'
-#     if not isinstance(coin, str):
-#         coin = ','.join(coin)
-#         formatted_input = '?fsyms={coin}&tsyms={units}&e={exchange}'
-#     return formatted_input.format(coin=coin,
-#                                   units=','.join(units),
-#                                   exchange=exchange)
+def get_coin_url(coin='ETH', units=['USD', 'BTC'], exchange=default_exchange):
+    formatted_input = '?fsym={coin}&tsyms={units}&e={exchange}'
+    if not isinstance(coin, str):
+        coin = ','.join(coin)
+        formatted_input = '?fsyms={coin}&tsyms={units}&e={exchange}'
+    return formatted_input.format(coin=coin,
+                                  units=','.join(units),
+                                  exchange=exchange)
 
 
 def coin_data():
@@ -119,65 +92,62 @@ def price_history(time_interval='minute', coin='ETH', unit='USD', N=2000, aggreg
     df['time']      = pd.to_datetime(df.loc[:,'time'], unit='s')
     df.set_index('time',inplace=True)
     
-    #metadata
-    df.args = dict(time_interval=time_interval, coin=coin.upper(), unit=unit.upper(), N=N, aggregate=aggregate, exchange=exchange, datetime_obj=datetime_obj)
+    # metadata
+    # df.args = dict(time_interval=time_interval, coin=coin.upper(), unit=unit.upper(), N=N, aggregate=aggregate, exchange=exchange, datetime_obj=datetime_obj)
     df.url = url
     return df
 
-
-def write_price_history(df, coin, unit, time_interval, exchange):
-    """
-    appends/merges price_history() output to csv file.  Filenames depend on coin (ETH), unit (USD), time_interval (minute), and exchange (CCCAGG).  Example: 
-    ./data/ETH_in_USD_by_minute_on_CCCAGG.csv
-
-    merge method:
-    new records will take precedence (overwrite) previous df records if they exist.
     
-    Example:
-    cc.save_price_history(df1, df1.args['coin'], unit=df1.args['unit'], time_interval=df1.args['time_interval'],exchange=df1.args['exchange'])
+def read_price_history(fname='ETH_in_USD_by_minute_on_CCCAGG.pkl'):
+    """
+    if file exists, returns df; else returns None
 
     TO DO:
-    - pull coin, unit, etc from df
-    - compress file storage?
-    - revise merge method; this should have fail-safes.  It is known that the last record of an API call is often corrupted (the only?)
-    - error handle the read/write
+    verify that fpath has correct format
     """
-    filetype = 'csv'
-    path = '../data/' + '{}_in_{}_by_{}_on_{}.{}'.format(coin, unit, time_interval, exchange, filetype)
+    file_path = '../data/' + fname
     
-    df_orig = read_price_history(coin, unit, time_interval, exchange)
-
-    if df_orig is None:
-        open(path, 'x')
-        print('no original dataframe; writing current')
-        df_updated = df
-
-    else:
-        print('appending df to previous df')
-        df_updated = df.combine_first(df_orig)
-
-    df_updated.to_csv(path)
-
-    
-def read_price_history(coin, unit, time_interval, exchange):
-    """
-    if csv file exists, returns df; else returns None
-
-    TO DO:
-    change params to file path
-    """
-    filetype = 'csv'
-    path = '../data/' + '{}_in_{}_by_{}_on_{}.{}'.format(coin, unit, time_interval, exchange, filetype)
-    
-    if os.path.exists(path):
-        df_main = pd.read_csv(path)
-        df_main.time = pd.to_datetime(df_main.time)
-        df_main.set_index('time', inplace=True)
+    if os.path.exists(file_path):
+        #df_main = pd.read_csv(file_path, parse_dates=['time'], date_parser = pd.to_datetime , index_col='time')
+        df_main = pd.read_pickle(file_path)
         return df_main
 
     else:
-        print('(no file found)')
-        return None    
+        return None 
+
+
+def write_price_history(df, file_extension='pkl'):
+    """
+    writes or appends/merges df = cc.price_history() to pickle file.  Filename is parsed from url attribute kept in df; this attribute is wiped on write.  
+
+    Example: 
+    df = cc.price_history()
+    cc.write_price_history(df)
+        
+    TO DO:
+    - warn/stop if record conflict are found
+    - write merge failsafes: same columns index ?, same index type as existing df?  Warn/abort on conflicting records.
+    - prevent metadata from being wiped?  Keep a log of metadata?
+    """
+    
+    # path = '../data/' + '{}_in_{}_by_{}_on_{}.{}'.format(coin, unit, time_interval, exchange, filetype)
+
+    p = url_to_params(df.url)
+    fname = '{}_in_{}_by_{}_on_{}.{}'.format(p['coin'], p['unit'], p['time_interval'], p['exchange'], file_extension)
+    file_path = '../data/' + fname
+    
+    df_orig = read_price_history(fname)
+    if df_orig is None:
+        open(file_path, 'x')
+        print('no previous data; writing new file from current dataframe.')
+        df_updated = df
+    else:
+        print('appending current df to:')
+        print(file_path)
+        df_updated = df.combine_first(df_orig)
+
+    # df_updated.to_csv(file_path)
+    df_updated.to_pickle(file_path)
 
 
 # corrupted.
