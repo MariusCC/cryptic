@@ -28,8 +28,3 @@ API sources include:
 - https://www.cryptocompare.com (exchanges, twitter, reddit, Facebook)
 - https://binance.com
 - https://kucoin.com
-
-# Mining sources
-- [multipool](https://www.multipool.us)
-- [fairpool](https://fairpool.xyz)
-
