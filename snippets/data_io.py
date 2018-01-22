@@ -5,8 +5,24 @@ from util_functions import *
 APPEND/READ PRICE HISTORY DATA to file for all default coins:
 # default parameters will read and write data to pickle file ETH_in_USD_by_minute_on_CCCAGG.pkl
 """
-coin_list = cc.default_coins.remove('USD')
+# Get basic data from all functions:
+coin_data = cc.coin_data()
 
+coin_syms = list(coin_data.Symbol.sample(n=2))
+# Get price matrix of 20 random coins
+
+
+
+# Price matrix
+price_matrix = cc.live_price_matrix(coin_syms=coin_syms)
+print(price_matrix)
+
+
+coin_list = cc.default_coins.remove('USD')
+# coin_data = cc.coin_data()
+# coin_list = coin_data.index
+
+coin_list = coin_data.sort_values('SortOrder').iloc[0:40].index.tolist()
 
 def update_recent_price_histories(time_interval='hour', coin_list=coin_list, unit='USD'):
 
@@ -14,10 +30,6 @@ def update_recent_price_histories(time_interval='hour', coin_list=coin_list, uni
 		df = cc.price_history(time_interval=time_interval, coin=coin)
 		cc.write_price_history(df)
 
-
-
-time_interval = 'hour'
-for coin in cc.defaul_coins:
 
 
 # append new data to master df

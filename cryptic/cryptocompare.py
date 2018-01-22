@@ -139,11 +139,10 @@ def write_price_history(df, file_extension='pkl'):
     df_orig = read_price_history(fname)
     if df_orig is None:
         open(file_path, 'x')
-        print('no previous data; writing new file from current dataframe.')
+        print('no previous data; writing {} from current dataframe.'.format(fname))
         df_updated = df
     else:
-        print('appending current df to:')
-        print(file_path)
+        print('appending current df to: {}'.format(fname))
         df_updated = df.combine_first(df_orig)
 
     # df_updated.to_csv(file_path)
@@ -230,7 +229,7 @@ def live_data_dump(coins=default_coins, exchange=default_exchange):
         df_dict[k] = pd.DataFrame.from_dict(v).T
 
     # df_dict['url']    = url
-    return df_dict
+    return df_dict 
 
 
 def live_social(input_coin_data=coin_data(), coins=default_coins,
